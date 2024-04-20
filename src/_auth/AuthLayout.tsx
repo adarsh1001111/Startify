@@ -14,7 +14,7 @@ const AuthLayout = () => {
             width="50%"
             height="50%"
             className="background-clip hidden xl:block h-screen  object-cover bg-no-repeat"
-            src="/public/assets/images/final_startup.svg"
+            src="/public/assets/images/1.svg"
           />
         </>
       )}
