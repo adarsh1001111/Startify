@@ -21,22 +21,22 @@ export type IUpdateUser = {
   file: File[];
 };
 
-export type INewPost = {
+export type INewPitch = {
   userId: string;
   caption: string;
   file: File[];
-  location?: string;
-  tags?: string;
+  location: string;
+  types?: string;
 };
 
-export type IUpdatePost = {
-  postId: string;
+export type IUpdatePitch = {
+  pitchId: string;
   caption: string;
-  imageId: string;
-  imageUrl: URL;
+  videoId: string;
+  videoUrl: URL;
   file: File[];
   location?: string;
-  tags?: string;
+  types?: string;
 };
 
 export type IUser = {

@@ -5,11 +5,13 @@ import {
   useInfiniteQuery,
 } from "@tanstack/react-query";
 import {
+  createPitch,
   createUserAccount,
   signInAccount,
   signOutAccount,
 } from "../appwrite/api";
-import { INewUser } from "@/types";
+import { INewPitch, INewUser } from "@/types";
+import { QUERY_KEYS } from "./queryKeys";
 
 export const useCreateUserAccount = () => {
   return useMutation({
@@ -26,5 +28,17 @@ export const useSignInAccount = () => {
 export const useSignOutAccount = () => {
   return useMutation({
     mutationFn: signOutAccount,
+  });
+};
+
+export const useCreatePitch = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (pitch: INewPitch) => createPitch(pitch),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_PITCHES],
+      });
+    },
   });
 };

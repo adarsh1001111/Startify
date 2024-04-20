@@ -1,7 +1,7 @@
 import { ID, Query } from "appwrite";
 
 import { appwriteConfig, account, databases, storage, avatars } from "./config";
-import { IUpdatePost, INewPost, INewUser, IUpdateUser } from "@/types";
+import { IUpdatePitch, INewUser, IUpdateUser, INewPitch } from "@/types";
 
 // ============================================================
 // AUTH
@@ -118,10 +118,10 @@ export async function signOutAccount() {
 // ============================================================
 
 // ============================== CREATE POST
-export async function createPost(post: INewPost) {
+export async function createPitch(pitch: INewPitch) {
   try {
     // Upload file to appwrite storage
-    const uploadedFile = await uploadFile(post.file[0]);
+    const uploadedFile = await uploadFile(pitch.file[0]);
 
     if (!uploadedFile) throw Error;
 
@@ -133,29 +133,29 @@ export async function createPost(post: INewPost) {
     }
 
     // Convert tags into array
-    const tags = post.tags?.replace(/ /g, "").split(",") || [];
+    const types = pitch.types?.replace(/ /g, "").split(",") || [];
 
     // Create post
-    const newPost = await databases.createDocument(
+    const newPitch = await databases.createDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
+      appwriteConfig.pitchCollectionId,
       ID.unique(),
       {
-        creator: post.userId,
-        caption: post.caption,
-        imageUrl: fileUrl,
-        imageId: uploadedFile.$id,
-        location: post.location,
-        tags: tags,
+        creator: pitch.userId,
+        caption: pitch.caption,
+        videoUrl: fileUrl,
+        videoId: uploadedFile.$id,
+        Location: pitch.location,
+        type: types,
       }
     );
 
-    if (!newPost) {
+    if (!newPitch) {
       await deleteFile(uploadedFile.$id);
       throw Error;
     }
 
-    return newPost;
+    return newPitch;
   } catch (error) {
     console.log(error);
   }
@@ -208,23 +208,23 @@ export async function deleteFile(fileId: string) {
 }
 
 // ============================== GET POSTS
-export async function searchPosts(searchTerm: string) {
+export async function searchPitches(searchTerm: string) {
   try {
-    const posts = await databases.listDocuments(
+    const pitches = await databases.listDocuments(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
+      appwriteConfig.pitchCollectionId,
       [Query.search("caption", searchTerm)]
     );
 
-    if (!posts) throw Error;
+    if (!pitches) throw Error;
 
-    return posts;
+    return pitches;
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
+export async function getInfinitePitches({ pageParam }: { pageParam: number }) {
   const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
 
   if (pageParam) {
@@ -234,7 +234,7 @@ export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
+      appwriteConfig.pitchCollectionId,
       queries
     );
 
@@ -253,7 +253,7 @@ export async function getPostById(postId?: string) {
   try {
     const post = await databases.getDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
+      appwriteConfig.pitchCollectionId,
       postId
     );
 
@@ -266,18 +266,18 @@ export async function getPostById(postId?: string) {
 }
 
 // ============================== UPDATE POST
-export async function updatePost(post: IUpdatePost) {
-  const hasFileToUpdate = post.file.length > 0;
+export async function updatePitch(pitch: IUpdatePitch) {
+  const hasFileToUpdate = pitch.file.length > 0;
 
   try {
-    let image = {
-      imageUrl: post.imageUrl,
-      imageId: post.imageId,
+    let video = {
+      videoUrl: pitch.videoUrl,
+      videoId: pitch.videoId,
     };
 
     if (hasFileToUpdate) {
       // Upload new file to appwrite storage
-      const uploadedFile = await uploadFile(post.file[0]);
+      const uploadedFile = await uploadFile(pitch.file[0]);
       if (!uploadedFile) throw Error;
 
       // Get new file url
@@ -287,31 +287,31 @@ export async function updatePost(post: IUpdatePost) {
         throw Error;
       }
 
-      image = { ...image, imageUrl: fileUrl, imageId: uploadedFile.$id };
+      video = { ...video, videoUrl: fileUrl, videoId: uploadedFile.$id };
     }
 
     // Convert tags into array
-    const tags = post.tags?.replace(/ /g, "").split(",") || [];
+    const types = pitch.types?.replace(/ /g, "").split(",") || [];
 
     //  Update post
-    const updatedPost = await databases.updateDocument(
+    const updatedPitch = await databases.updateDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
-      post.postId,
+      appwriteConfig.pitchCollectionId,
+      pitch.pitchId,
       {
-        caption: post.caption,
-        imageUrl: image.imageUrl,
-        imageId: image.imageId,
-        location: post.location,
-        tags: tags,
+        caption: pitch.caption,
+        videoUrl: video.videoUrl,
+        videoId: video.videoId,
+        location: pitch.location,
+        types: types,
       }
     );
 
     // Failed to update
-    if (!updatedPost) {
+    if (!updatedPitch) {
       // Delete new file that has been recently uploaded
       if (hasFileToUpdate) {
-        await deleteFile(image.imageId);
+        await deleteFile(video.videoId);
       }
 
       // If no new file uploaded, just throw error
@@ -320,29 +320,29 @@ export async function updatePost(post: IUpdatePost) {
 
     // Safely delete old file after successful update
     if (hasFileToUpdate) {
-      await deleteFile(post.imageId);
+      await deleteFile(pitch.videoId);
     }
 
-    return updatedPost;
+    return updatedPitch;
   } catch (error) {
     console.log(error);
   }
 }
 
 // ============================== DELETE POST
-export async function deletePost(postId?: string, imageId?: string) {
-  if (!postId || !imageId) return;
+export async function deletePitch(pitchId?: string, videoId?: string) {
+  if (!pitchId || !videoId) return;
 
   try {
     const statusCode = await databases.deleteDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
-      postId
+      appwriteConfig.pitchCollectionId,
+      pitchId
     );
 
     if (!statusCode) throw Error;
 
-    await deleteFile(imageId);
+    await deleteFile(videoId);
 
     return { status: "Ok" };
   } catch (error) {
@@ -351,12 +351,12 @@ export async function deletePost(postId?: string, imageId?: string) {
 }
 
 // ============================== LIKE / UNLIKE POST
-export async function likePost(postId: string, likesArray: string[]) {
+export async function likePost(pitchId: string, likesArray: string[]) {
   try {
     const updatedPost = await databases.updateDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
-      postId,
+      appwriteConfig.pitchCollectionId,
+      pitchId,
       {
         likes: likesArray,
       }
@@ -371,31 +371,31 @@ export async function likePost(postId: string, likesArray: string[]) {
 }
 
 // ============================== SAVE POST
-export async function savePost(userId: string, postId: string) {
+export async function savePitch(userId: string, pitchId: string) {
   try {
-    const updatedPost = await databases.createDocument(
+    const updatedPitch = await databases.createDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.savesCollectionId,
+      appwriteConfig.savedCollectionId,
       ID.unique(),
       {
         user: userId,
-        post: postId,
+        pitch: pitchId,
       }
     );
 
-    if (!updatedPost) throw Error;
+    if (!updatedPitch) throw Error;
 
-    return updatedPost;
+    return updatedPitch;
   } catch (error) {
     console.log(error);
   }
 }
 // ============================== DELETE SAVED POST
-export async function deleteSavedPost(savedRecordId: string) {
+export async function deleteSavedPitch(savedRecordId: string) {
   try {
     const statusCode = await databases.deleteDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.savesCollectionId,
+      appwriteConfig.savedCollectionId,
       savedRecordId
     );
 
@@ -408,13 +408,13 @@ export async function deleteSavedPost(savedRecordId: string) {
 }
 
 // ============================== GET USER'S POST
-export async function getUserPosts(userId?: string) {
+export async function getUserPitches(userId?: string) {
   if (!userId) return;
 
   try {
     const post = await databases.listDocuments(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
+      appwriteConfig.pitchCollectionId,
       [Query.equal("creator", userId), Query.orderDesc("$createdAt")]
     );
 
@@ -431,7 +431,7 @@ export async function getRecentPosts() {
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
+      appwriteConfig.pitchCollectionId,
       [Query.orderDesc("$createdAt"), Query.limit(20)]
     );
 
