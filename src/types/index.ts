@@ -25,7 +25,7 @@ export type INewPitch = {
   userId: string;
   caption: string;
   file: File[];
-  location: string;
+  location?: string;
   types?: string;
 };
 

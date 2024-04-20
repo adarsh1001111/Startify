@@ -224,27 +224,27 @@ export async function searchPitches(searchTerm: string) {
   }
 }
 
-export async function getInfinitePitches({ pageParam }: { pageParam: number }) {
-  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+// export async function getInfinitePitches({ pageParam }: { pageParam: number }) {
+//   const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
 
-  if (pageParam) {
-    queries.push(Query.cursorAfter(pageParam.toString()));
-  }
+//   if (pageParam) {
+//     queries.push(Query.cursorAfter(pageParam.toString()));
+//   }
 
-  try {
-    const posts = await databases.listDocuments(
-      appwriteConfig.databaseId,
-      appwriteConfig.pitchCollectionId,
-      queries
-    );
+//   try {
+//     const posts = await databases.listDocuments(
+//       appwriteConfig.databaseId,
+//       appwriteConfig.pitchCollectionId,
+//       queries
+//     );
 
-    if (!posts) throw Error;
+//     if (!posts) throw Error;
 
-    return posts;
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return posts;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 // ============================== GET POST BY ID
 export async function getPostById(postId?: string) {
@@ -448,27 +448,27 @@ export async function getRecentPosts() {
 // ============================================================
 
 // ============================== GET USERS
-export async function getUsers(limit?: number) {
-  const queries: any[] = [Query.orderDesc("$createdAt")];
+// export async function getUsers(limit?: number) {
+//   const queries: any[] = [Query.orderDesc("$createdAt")];
 
-  if (limit) {
-    queries.push(Query.limit(limit));
-  }
+//   if (limit) {
+//     queries.push(Query.limit(limit));
+//   }
 
-  try {
-    const users = await databases.listDocuments(
-      appwriteConfig.databaseId,
-      appwriteConfig.userCollectionId,
-      queries
-    );
+//   try {
+//     const users = await databases.listDocuments(
+//       appwriteConfig.databaseId,
+//       appwriteConfig.userCollectionId,
+//       queries
+//     );
 
-    if (!users) throw Error;
+//     if (!users) throw Error;
 
-    return users;
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return users;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 // ============================== GET USER BY ID
 export async function getUserById(userId: string) {

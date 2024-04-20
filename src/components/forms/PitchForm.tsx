@@ -24,8 +24,7 @@ type PitchFormProps = {
 };
 
 const PitchForm = ({ pitch }: PitchFormProps) => {
-  const { mutateAsync: createPitch, isPending: isLoadingCreate } =
-    useCreatePitch();
+  const { mutateAsync: createPitch } = useCreatePitch();
   const { user } = useUserContext();
   const { toast } = useToast();
   const navigate = useNavigate();
