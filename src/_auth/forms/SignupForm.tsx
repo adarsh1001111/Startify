@@ -50,7 +50,7 @@ const SignupForm = () => {
       const newUser = await createUserAccount(user);
 
       if (!newUser) {
-        toast({ title: "Sign up failed. Please try again." });
+        toast({ title: "Sign Up failed. Please try again." });
 
         return;
       }
@@ -88,9 +88,9 @@ const SignupForm = () => {
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
         <img
-          height="100px"
-          width="100px"
-          src="/assets/images/logo-white.png"
+          height="150px"
+          width="150px"
+          src="/assets/images/logo-white.svg"
           alt="logo"
         />
 
