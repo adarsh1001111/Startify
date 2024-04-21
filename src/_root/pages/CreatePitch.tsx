@@ -13,7 +13,7 @@ const CreatePitch = () => {
           />
           <h2 className="h3-bold md:h2-bold text-left w-full">Upload Pitch</h2>
         </div>
-        <PitchForm />
+        <PitchForm action={"Create"} />
       </div>
     </div>
   );
