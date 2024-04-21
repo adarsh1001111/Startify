@@ -247,14 +247,14 @@ export async function searchPitches(searchTerm: string) {
 // }
 
 // ============================== GET POST BY ID
-export async function getPostById(postId?: string) {
-  if (!postId) throw Error;
+export async function getPitchById(pitchId?: string) {
+  if (!pitchId) throw Error;
 
   try {
     const post = await databases.getDocument(
       appwriteConfig.databaseId,
       appwriteConfig.pitchCollectionId,
-      postId
+      pitchId
     );
 
     if (!post) throw Error;
@@ -351,9 +351,9 @@ export async function deletePitch(pitchId?: string, videoId?: string) {
 }
 
 // ============================== LIKE / UNLIKE POST
-export async function likePost(pitchId: string, likesArray: string[]) {
+export async function likePitch(pitchId: string, likesArray: string[]) {
   try {
-    const updatedPost = await databases.updateDocument(
+    const updatedPitch = await databases.updateDocument(
       appwriteConfig.databaseId,
       appwriteConfig.pitchCollectionId,
       pitchId,
@@ -362,9 +362,9 @@ export async function likePost(pitchId: string, likesArray: string[]) {
       }
     );
 
-    if (!updatedPost) throw Error;
+    if (!updatedPitch) throw Error;
 
-    return updatedPost;
+    return updatedPitch;
   } catch (error) {
     console.log(error);
   }
@@ -427,17 +427,17 @@ export async function getUserPitches(userId?: string) {
 }
 
 // ============================== GET POPULAR POSTS (BY HIGHEST LIKE COUNT)
-export async function getRecentPosts() {
+export async function getRecentPitches() {
   try {
-    const posts = await databases.listDocuments(
+    const pitches = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.pitchCollectionId,
-      [Query.orderDesc("$createdAt"), Query.limit(20)]
+      [Query.orderDesc(`$createdAt`), Query.limit(20)]
     );
 
-    if (!posts) throw Error;
+    if (!pitches) throw Error;
 
-    return posts;
+    return pitches;
   } catch (error) {
     console.log(error);
   }
@@ -448,27 +448,27 @@ export async function getRecentPosts() {
 // ============================================================
 
 // ============================== GET USERS
-// export async function getUsers(limit?: number) {
-//   const queries: any[] = [Query.orderDesc("$createdAt")];
+export async function getUsers(limit?: number) {
+  const queries = [Query.orderDesc("$createdAt")];
 
-//   if (limit) {
-//     queries.push(Query.limit(limit));
-//   }
+  if (limit) {
+    queries.push(Query.limit(limit));
+  }
 
-//   try {
-//     const users = await databases.listDocuments(
-//       appwriteConfig.databaseId,
-//       appwriteConfig.userCollectionId,
-//       queries
-//     );
+  try {
+    const users = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      queries
+    );
 
-//     if (!users) throw Error;
+    if (!users) throw Error;
 
-//     return users;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+    return users;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // ============================== GET USER BY ID
 export async function getUserById(userId: string) {

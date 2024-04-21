@@ -7,6 +7,10 @@ export const SignupValidation = z.object({
   password: z
     .string()
     .min(8, { message: "Password must be atleast 8 characters" }),
+  aadhar: z
+    .string()
+    .min(12, { message: "Aadhar should contain 12 digits" })
+    .max(12, { message: "Aadhar should contain 12 digits" }),
 });
 export const SigninValidation = z.object({
   email: z.string().email(),

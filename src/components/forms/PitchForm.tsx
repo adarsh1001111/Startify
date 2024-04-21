@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useCreatePitch } from "@/lib/react-query/queriesAndMutations";
 type PitchFormProps = {
   pitch?: Models.Document;
+  action: "Create" | "Update";
 };
 
 const PitchForm = ({ pitch }: PitchFormProps) => {

@@ -1,7 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createPitch,
   createUserAccount,
+  deleteSavedPitch,
+  getCurrentUser,
+  getRecentPitches,
+  getUserById,
+  getPitchById,
+  getUsers,
+  likePitch,
+  savePitch,
   signInAccount,
   signOutAccount,
 } from "../appwrite/api";
@@ -35,5 +43,101 @@ export const useCreatePitch = () => {
         queryKey: [QUERY_KEYS.GET_RECENT_PITCHES],
       });
     },
+  });
+};
+export const useGetRecentPitches = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_RECENT_PITCHES],
+    queryFn: getRecentPitches,
+  });
+};
+export const useLikePitch = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      pitchId,
+      likesArray,
+    }: {
+      pitchId: string;
+      likesArray: string[];
+    }) => likePitch(pitchId, likesArray),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_PITCH_BY_ID, data?.$id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_PITCHES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_PITCHES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+      });
+    },
+  });
+};
+
+export const useSavePitch = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, pitchId }: { userId: string; pitchId: string }) =>
+      savePitch(userId, pitchId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_PITCHES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_PITCHES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+      });
+    },
+  });
+};
+export const useDeleteSavedPitch = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (savedRecordId: string) => deleteSavedPitch(savedRecordId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_PITCHES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_PITCHES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+      });
+    },
+  });
+};
+export const useGetCurrentUser = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+    queryFn: getCurrentUser,
+  });
+};
+
+export const useGetUsers = (limit?: number) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USERS],
+    queryFn: () => getUsers(limit),
+  });
+};
+
+export const useGetUserById = (userId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER_BY_ID, userId],
+    queryFn: () => getUserById(userId),
+    enabled: !!userId,
+  });
+};
+export const useGetPitchById = (pitchId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_PITCH_BY_ID, pitchId],
+    queryFn: () => getPitchById(pitchId),
+    enabled: !!pitchId,
   });
 };

@@ -35,6 +35,7 @@ const SignupForm = () => {
       username: "",
       email: "",
       password: "",
+      aadhar: "",
     },
   });
 
@@ -155,6 +156,20 @@ const SignupForm = () => {
                 <FormLabel className="shad-form_label">Password</FormLabel>
                 <FormControl>
                   <Input type="password" className="shad-input" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="aadhar"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="shad-form_label">Aadhar</FormLabel>
+                <FormControl>
+                  <Input type="text" className="shad-input" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
