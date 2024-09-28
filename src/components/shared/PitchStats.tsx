@@ -8,9 +8,9 @@ import {
 } from "@/lib/react-query/queriesAndMutations";
 import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Loader from "./Loader";
 // import { useLocation } from "react-router-dom";
-
 type PitchStatsProps = {
   pitch: Models.Document;
   userId: string;
@@ -24,8 +24,9 @@ const PitchStats = ({ pitch, userId }: PitchStatsProps) => {
   const [isSaved, setIsSaved] = useState(false);
 
   const { mutate: likePitch } = useLikePitch();
-  const { mutate: savePitch } = useSavePitch();
-  const { mutate: deleteSavedPitch } = useDeleteSavedPitch();
+  const { mutate: savePitch, isPending: isSavingPitch } = useSavePitch();
+  const { mutate: deleteSavedPitch, isPending: isDeletingSaved } =
+    useDeleteSavedPitch();
 
   const { data: currentUser } = useGetCurrentUser();
 
@@ -34,8 +35,8 @@ const PitchStats = ({ pitch, userId }: PitchStatsProps) => {
   );
 
   useEffect(() => {
-    setIsSaved(!!savedPitchRecord);
-  }, [currentUser]);
+    setIsSaved(!savedPitchRecord);
+  }, [savedPitchRecord, currentUser]);
 
   const handleLikePitch = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
@@ -59,10 +60,6 @@ const PitchStats = ({ pitch, userId }: PitchStatsProps) => {
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {
     e.stopPropagation();
-
-    const savedPitchRecord = currentUser?.save.find(
-      (record: Models.Document) => record.$id === pitch.$id
-    );
 
     if (savedPitchRecord) {
       setIsSaved(false);
@@ -92,22 +89,27 @@ const PitchStats = ({ pitch, userId }: PitchStatsProps) => {
           onClick={handleLikePitch}
           className="cursor-pointer"
         />
+
         <p className="small-medium lg:base-medium">{likes.length}</p>
       </div>
 
       <div className="flex gap-2 ">
-        <img
-          src={`${
-            isSaved
-              ? "/public/assets/icons/saved.svg"
-              : "/public/assets/icons/save.svg"
-          }`}
-          alt="like"
-          width={20}
-          height={20}
-          onClick={handleSavePitch}
-          className="cursor-pointer"
-        />
+        {isSavingPitch || isDeletingSaved ? (
+          <Loader />
+        ) : (
+          <img
+            src={`${
+              isSaved
+                ? "/public/assets/icons/saved.svg"
+                : "/public/assets/icons/save.svg"
+            }`}
+            alt="like"
+            width={20}
+            height={20}
+            onClick={handleSavePitch}
+            className="cursor-pointer"
+          />
+        )}
       </div>
     </div>
   );

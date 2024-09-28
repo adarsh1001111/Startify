@@ -4,29 +4,8 @@ import { formatDate } from "@/lib/utils";
 import { Models } from "appwrite";
 // import { Loader } from "lucide-react";
 import { Link } from "react-router-dom";
+import PitchStats from "./PitchStats";
 
-// import { Client, Storage } from "appwrite";
-// import { appwriteConfig } from "@/lib/appwrite/config";
-/*
-const client = new Client();
-
-const storage = new Storage(client);
-
-client
-  .setEndpoint("https://cloud.appwrite.io/v1") // Your API Endpoint
-  .setProject(appwriteConfig.projectId); // Your project ID
-
-const promise = storage.getFile(appwriteConfig.storageId, "[FILE_ID]");
-
-promise.then(
-  function (response) {
-    console.log(response); // Success
-  },
-  function (error) {
-    console.log(error); // Failure
-  }
-);
-*/
 type PitchCardProps = {
   pitch: Models.Document;
 };
@@ -34,7 +13,7 @@ const PitchCard = ({ pitch }: PitchCardProps) => {
   const { user } = useUserContext();
   // const { id } = useParams();
   //const { isPending } = useGetPitchById(id || "");
-
+  if (!pitch.creator) return;
   return (
     <div className="post-card">
       <div className="flex-between">
@@ -86,16 +65,20 @@ const PitchCard = ({ pitch }: PitchCardProps) => {
           </ul>
         </div>
         {
+          // Video element replacing the image
           <video
-            height={10}
-            width={10}
-            autoPlay
-            loop
-            src="/public/assets/images/WhatsApp Video 2024-04-21 at 12.17.19 PM.mp4"
-            className="post-card_img"
+            src={
+              "public/assets/images/WhatsApp Video 2024-04-21 at 12.16.51 PM (1) (1).mp4"
+            }
+            className="post-card_video"
+            controls
+            width="600" // Specified width for video
+            height="340" // Specified height for video
+            poster="https://t4.ftcdn.net/jpg/03/22/82/19/240_F_322821903_AKplDFbaUeYzf6sJpl93O1e3KEXUKStK.jpg" // Poster if video is not yet loaded
           />
         }
       </Link>
+      <PitchStats pitch={pitch} userId={user.id} />
     </div>
   );
 };

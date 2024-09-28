@@ -371,21 +371,18 @@ export async function likePitch(pitchId: string, likesArray: string[]) {
 }
 
 // ============================== SAVE POST
-export async function savePitch(userId: string, pitchId: string) {
+export async function savePitch(pitchId: string, userId: string) {
   try {
-    const updatedPitch = await databases.createDocument(
+    const savedPitch = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.savedCollectionId,
       ID.unique(),
-      {
-        user: userId,
-        pitch: pitchId,
-      }
+      { users: userId, pitch: pitchId }
     );
 
-    if (!updatedPitch) throw Error;
+    if (!savedPitch) throw Error;
 
-    return updatedPitch;
+    return savedPitch;
   } catch (error) {
     console.log(error);
   }

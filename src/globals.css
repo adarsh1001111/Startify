@@ -96,7 +96,7 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: #09090a;
+    background: #09090a16;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -277,4 +277,9 @@
   .shad-button_ghost {
     @apply flex gap-4 items-center justify-start hover:bg-transparent hover:text-white !important;
   }
+}
+.post-card_video {
+  width: 600px; /* Fixed width */
+  height: 340px; /* Fixed height */
+  object-fit: cover; /* Ensures content fits within the defined dimensions */
 }

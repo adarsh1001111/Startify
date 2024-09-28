@@ -1,11 +1,3 @@
-export type IContextType = {
-  user: IUser;
-  isLoading: boolean;
-  setUser: React.Dispatch<React.SetStateAction<IUser>>;
-  isAuthenticated: boolean;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-  checkAuthUser: () => Promise<boolean>;
-};
 export type INavLink = {
   imgURL: string;
   route: string;
@@ -21,22 +13,22 @@ export type IUpdateUser = {
   file: File[];
 };
 
-export type INewPitch = {
+export type INewPost = {
   userId: string;
   caption: string;
   file: File[];
   location?: string;
-  types?: string;
+  tags?: string;
 };
 
-export type IUpdatePitch = {
-  pitchId: string;
+export type IUpdatePost = {
+  postId: string;
   caption: string;
-  videoId: string;
-  videoUrl: URL;
+  imageId: string;
+  imageUrl: URL;
   file: File[];
   location?: string;
-  types?: string;
+  tags?: string;
 };
 
 export type IUser = {
@@ -45,7 +37,7 @@ export type IUser = {
   username: string;
   email: string;
   imageUrl: string;
-  Description: string;
+  bio: string;
 };
 
 export type INewUser = {

@@ -13,7 +13,10 @@ import {
   signInAccount,
   signOutAccount,
 } from "../appwrite/api";
-import { INewPitch, INewUser } from "@/types";
+import {
+  INewPitch,
+  INewUser,
+} from "/Users/adarshamit1001/Startify/src/types/index";
 import { QUERY_KEYS } from "./queryKeys";
 
 export const useCreateUserAccount = () => {
@@ -82,7 +85,7 @@ export const useSavePitch = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ userId, pitchId }: { userId: string; pitchId: string }) =>
-      savePitch(userId, pitchId),
+      savePitch(pitchId, userId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_PITCHES],
